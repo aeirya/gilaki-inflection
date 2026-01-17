@@ -10,7 +10,7 @@ fsts['verb_pasts'] = FST.re('|'.join(pasts))
 
 fsts['suffix_tags'] = FST.re("('[Past]'):''")
 
-fsts['lexicon'] = FST.re('$verb_infs $suffix_tags', fsts)
+fsts['lexicon'] = FST.re('$verb_infs ($suffix_tags)?', fsts)
 
 
 fsts['əstən_suffix'] = FST.re("$^rewrite((əstən):(əst) / _ #)")
@@ -27,4 +27,7 @@ fsts['remove_suffix'] = FST.re("$tən_suffix_group @ $en_suffix_group", fsts)
 
 fsts['grammar'] = FST.re('$lexicon @ $remove_suffix @ $verb_pasts', fsts)
 
-print(Paradigm(fsts['grammar'], ".*"))
+grammar = fsts['grammar']
+
+grammar.view()
+# print(Paradigm(fsts['grammar'], ".*"))

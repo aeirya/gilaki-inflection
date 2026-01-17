@@ -1,6 +1,8 @@
-from gltk.verb_table import read_verb_table, past_present_lists
+from gltk.verb_table import past_present_lists
 
 from pyfoma import *
+
+
 fsts = {}
 
 pasts, presents = past_present_lists()
@@ -9,14 +11,9 @@ pasts, presents = past_present_lists()
 fsts['verb_pasts'] = FST.re('|'.join(pasts))
 fsts['verb_presents'] = FST.re('|'.join(presents))
 
-def paststem2present():
-    pass
+fsts['suffix_tags'] = FST.re("('[Present]'):''")
 
-
-fsts['suffix_tags'] = FST.re("('[Past2Present]'):''")
-
-fsts['lexicon'] = FST.re('$verb_pasts $suffix_tags', fsts)
-
+fsts['lexicon'] = FST.re('$verb_pasts $suffix_tags?', fsts)
 
 fsts['mir'] = FST.re("((murd)|(mərd)):(mir '+')")
 fsts['deh'] = FST.re("(da):((deh)|(dih)|d)")
@@ -47,11 +44,12 @@ fsts['td'] = FST.re("$ad @ $ud @ $kaft @ $ft @ $end_t @ $end_d", fsts)
 fsts['end_e_rm'] = FST.re("$^rewrite(e:'+' / (š|s|n) _ #)")
 fsts['end_e_in'] = FST.re("$^rewrite(e:(in '+') / (v|d|z|h) _ #)")
 fsts['end_e'] = FST.re("$end_e_rm @ $end_e_in", fsts)
-# fsts['pronounciation_exceptions'] = FST.re()
 
 fsts['remove_ending'] = FST.re("$əst @ $əsht @ $asht @ $isht @ $xt @ $st @ $td @ $end_a @ $end_e", fsts)
 fsts['cleanup'] = FST.re("$^rewrite('+':'')")
 
 fsts['grammar'] = FST.re('$lexicon @ $verb_pasts @ $irregulars @ $remove_ending @ $cleanup @ $verb_presents', fsts)
 
-print(Paradigm(fsts['grammar'], ".*"))
+grammar = fsts['grammar']
+
+# print(Paradigm(fsts['grammar'], ".*"))
