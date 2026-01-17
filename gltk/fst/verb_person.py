@@ -3,14 +3,12 @@ from pyfoma import *
 
 fsts = {}
 
+table = read_full_verb_table()
 
-table = read_full_verb_table().sample(1)
-
-fsts['present_stem_vocab'] = FST.re('|'.join(table['pres']))
-fsts['past_stem_vocab'] = FST.re('|'.join(table['past']))
+# fsts['present_stem_vocab'] = FST.re('|'.join(table['pres']))
+# fsts['past_stem_vocab'] = FST.re('|'.join(table['past']))
 fsts['inf_vocab'] = FST.re('|'.join(table['inf']))
-
-fsts['vocab'] = FST.re('$inf_vocab', fsts)
+# fsts['vocab'] = FST.re('$inf_vocab', fsts)
 
 fsts['person_tag'] = FST.re(
     "( '[1p,Sg]' | '[2p,Sg]' | '[3p,Sg]' | '[1p,Pl]' | '[2p,Pl]' | '[3p,Pl]' )"
@@ -55,10 +53,12 @@ fsts['past_cont_person_ending'] = FST.re(
     ]))
 
 
-# fsts['person'] = 
+# fsts['lexicon'] = FST.re('$inf_vocab @ $tags', fsts)
+fsts['present'] = FST.re("('[Present]') ($present_person_ending)", fsts)
+fsts['past'] = FST.re("('[Past]') ($past_person_ending)", fsts)
+fsts['tag_grammar'] = FST.re('.* ($tags @ (($present | $past)))', fsts)
 
-fsts['lexicon'] = FST.re('$inf_vocab $tags', fsts)
-fsts['present'] = FST.re("($inf_vocab) ('[Present]':'') ($present_person_ending)", fsts)
-fsts['grammar'] = FST.re('$lexicon @ ($present)', fsts)
+# fsts['grammar']   = FST.re('($inf_vocab $tags) @ $tag_grammar', fsts)
+# print(Paradigm(fsts['grammar'], ".*"))
 
-print(Paradigm(fsts['grammar'], ".*"))
+grammar = fsts['tag_grammar']

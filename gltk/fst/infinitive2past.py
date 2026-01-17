@@ -8,10 +8,8 @@ infinitives, pasts = infinitive_past_lists()
 fsts['verb_infs'] = FST.re('|'.join(infinitives))
 fsts['verb_pasts'] = FST.re('|'.join(pasts))
 
-fsts['suffix_tags'] = FST.re("('[Past]'):''")
-
-fsts['lexicon'] = FST.re('$verb_infs ($suffix_tags)?', fsts)
-
+# fsts['suffix_tags'] = FST.re("('[Past]'):''")
+# fsts['lexicon'] = FST.re('$verb_infs ($suffix_tags)?', fsts)
 
 fsts['əstən_suffix'] = FST.re("$^rewrite((əstən):(əst) / _ #)")
 fsts['tən_suffix'] = FST.re("$^rewrite((tən):(t) / _ #)")
@@ -25,9 +23,9 @@ fsts['en_suffix_group'] = FST.re("$een_suffix @ $en_suffix @ $an_suffix", fsts)
 
 fsts['remove_suffix'] = FST.re("$tən_suffix_group @ $en_suffix_group", fsts)
 
-fsts['grammar'] = FST.re('$lexicon @ $remove_suffix @ $verb_pasts', fsts)
+fsts['grammar'] = FST.re('$verb_infs @ $remove_suffix @ $verb_pasts', fsts)
 
 grammar = fsts['grammar']
 
-grammar.view()
+# grammar.view()
 # print(Paradigm(fsts['grammar'], ".*"))

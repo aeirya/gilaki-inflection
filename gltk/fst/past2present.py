@@ -1,7 +1,5 @@
 from gltk.verb_table import past_present_lists
-
 from pyfoma import *
-
 
 fsts = {}
 
@@ -11,9 +9,8 @@ pasts, presents = past_present_lists()
 fsts['verb_pasts'] = FST.re('|'.join(pasts))
 fsts['verb_presents'] = FST.re('|'.join(presents))
 
-fsts['suffix_tags'] = FST.re("('[Present]'):''")
-
-fsts['lexicon'] = FST.re('$verb_pasts $suffix_tags?', fsts)
+# fsts['suffix_tags'] = FST.re("('[Present]'):''")
+# fsts['lexicon'] = FST.re('$verb_pasts $suffix_tags?', fsts)
 
 fsts['mir'] = FST.re("((murd)|(mərd)):(mir '+')")
 fsts['deh'] = FST.re("(da):((deh)|(dih)|d)")
@@ -48,7 +45,7 @@ fsts['end_e'] = FST.re("$end_e_rm @ $end_e_in", fsts)
 fsts['remove_ending'] = FST.re("$əst @ $əsht @ $asht @ $isht @ $xt @ $st @ $td @ $end_a @ $end_e", fsts)
 fsts['cleanup'] = FST.re("$^rewrite('+':'')")
 
-fsts['grammar'] = FST.re('$lexicon @ $verb_pasts @ $irregulars @ $remove_ending @ $cleanup @ $verb_presents', fsts)
+fsts['grammar'] = FST.re('$verb_pasts @ $irregulars @ $remove_ending @ $cleanup @ $verb_presents', fsts)
 
 grammar = fsts['grammar']
 
