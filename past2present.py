@@ -1,4 +1,4 @@
-from gltk.verbs import read_verb_table, past_present_lists
+from gltk.verb_table import read_verb_table, past_present_lists
 
 from pyfoma import *
 fsts = {}

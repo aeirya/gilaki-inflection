@@ -6,7 +6,7 @@ from pyfoma import *
 fsts = {}
 
 words = []
-for line in read_lines('gltk/words.txt'):
+for line in read_lines('gltk/data/words.txt'):
     for word in line.split():
         words.append(normalize(word))
 

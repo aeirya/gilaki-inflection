@@ -11,10 +11,10 @@ def read_table(path):
     return table
 
 def read_verb_infinitive2past_table():
-    return read_table('gltk/infinitives-a.txt')
+    return read_table('gltk/data/verb/infinitive-past.txt')
 
 def read_verb_past2present_table():
-    return read_table('gltk/past-present.txt')
+    return read_table('gltk/data/verb/present-past.txt')
 
 def infinitive_past_lists():
     table = read_verb_infinitive2past_table()

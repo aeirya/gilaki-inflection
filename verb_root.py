@@ -1,11 +1,9 @@
-from gltk.verbs import read_verb_table
+from gltk.verb_table import infinitive_past_lists
 
 from pyfoma import *
 fsts = {}
 
-verb_table = read_verb_table()
-infinitives = [v[0] for v in verb_table]
-pasts = [v[1] for v in verb_table]
+infinitives, pasts = infinitive_past_lists()
 
 fsts['verb_infs'] = FST.re('|'.join(infinitives))
 fsts['verb_pasts'] = FST.re('|'.join(pasts))
