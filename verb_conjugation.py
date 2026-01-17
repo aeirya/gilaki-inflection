@@ -4,7 +4,6 @@ from gltk.fst import infinitive2past, past2present, verb_person
 from pyfoma import *
 fsts = {}
 
-
 table = read_full_verb_table().sample(1)
 
 fsts['present_stem_vocab'] = FST.re('|'.join(table['pres']))
@@ -28,7 +27,7 @@ fsts['inf2past'] = infinitive2past.grammar
 fsts['past2pre'] = past2present.grammar
 fsts['verb_person'] = verb_person.grammar
 
-fsts['past_stem'] = FST.re("$inf2past ('[Past]')", fsts)
+fsts['past_stem'] = FST.re("$inf2past ('[Past]' | '[PastCont]')", fsts)
 fsts['present_stem'] = FST.re(
     "($inf2past @ $past2pre) ('[Present]')",
     fsts)
@@ -41,4 +40,5 @@ fsts['delete_tags'] = FST.re("$^rewrite($tense_tag:'')", fsts)
 fsts['lexicon'] = FST.re('$vocab $tags', fsts)
 fsts['grammar'] = FST.re('$lexicon @ ($stemmer) @ ($verb_person) @ ($delete_tags)', fsts)
 
+# print(Paradigm(verb_person.grammar, ".*"))
 print(Paradigm(fsts['grammar'], ".*"))

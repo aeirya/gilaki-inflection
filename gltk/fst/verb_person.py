@@ -56,9 +56,11 @@ fsts['past_cont_person_ending'] = FST.re(
 # fsts['lexicon'] = FST.re('$inf_vocab @ $tags', fsts)
 fsts['present'] = FST.re("('[Present]') ($present_person_ending)", fsts)
 fsts['past'] = FST.re("('[Past]') ($past_person_ending)", fsts)
-fsts['tag_grammar'] = FST.re('.* ($tags @ (($present | $past)))', fsts)
+fsts['pastcont'] = FST.re("('[PastCont]') ($past_cont_person_ending)", fsts)
+fsts['tag_grammar'] = FST.re('.* ($tags @ (($present | $past | $pastcont)))', fsts)
 
 # fsts['grammar']   = FST.re('($inf_vocab $tags) @ $tag_grammar', fsts)
-# print(Paradigm(fsts['grammar'], ".*"))
 
 grammar = fsts['tag_grammar']
+
+# print(Paradigm(grammar, ".*"))
