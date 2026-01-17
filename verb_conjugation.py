@@ -1,5 +1,6 @@
 from gltk.verb_table import read_full_verb_table
 from gltk.fst import infinitive2past, past2present, verb_person
+from gltk.std import normalize
 
 from pyfoma import *
 fsts = {}
@@ -35,10 +36,15 @@ fsts['present_stem'] = FST.re(
 fsts['stem'] = FST.re('($past_stem) | ($present_stem) ', fsts)
 fsts['stemmer'] = FST.re("($stem $person_tag)", fsts)
 
-fsts['delete_tags'] = FST.re("$^rewrite($tense_tag:'')", fsts)
+# fsts['delete_tags'] = FST.re("$^rewrite($tense_tag:'')", fsts)
+fsts['delete_past_tense_tag'] = FST.re("$past_stem_vocab (('[Past]' | '[PastCont]'):'') .*", fsts)
+fsts['delete_present_tense_tag'] = FST.re("$present_stem_vocab ('[Present]':'') .*", fsts)
+fsts['delete_tense_tag'] = FST.re('($delete_past_tense_tag) | ($delete_present_tense_tag)', fsts)
 
 fsts['lexicon'] = FST.re('$vocab $tags', fsts)
-fsts['grammar'] = FST.re('$lexicon @ ($stemmer) @ ($verb_person) @ ($delete_tags)', fsts)
+fsts['grammar'] = FST.re('($stemmer) @ ($verb_person) @ ($delete_tense_tag)', fsts)
 
 # print(Paradigm(verb_person.grammar, ".*"))
 print(Paradigm(fsts['grammar'], ".*"))
+
+# print(list(fsts['grammar'].analyze(normalize('iškəft'))))
