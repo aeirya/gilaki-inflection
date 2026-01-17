@@ -10,6 +10,7 @@ _symbols = "- , ! . :".split()
 symbols = [_wrap(x) for x in _symbols]
 
 special_chars = special_letters + _symbols
+special_chars.remove('ə')
 
 def normalize_char(x):
     return _wrap(x) if x in special_chars else x
