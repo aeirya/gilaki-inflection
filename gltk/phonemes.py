@@ -3,7 +3,7 @@
 # In a position after the consonant y and also after other consonants, including the tongue in a mid-position (š, č, ǰ), ə is pronounced with the tongue much further forward in the mouth, coming closer in phonation to e: šənå ‘swimming’; ǰəngəl ‘wood(s)’; yək ‘one’ (they are pro- nounced: šĕnå, ǰĕngəl, yĕk).
 
 special_char_vowels = "ə ı̄ ū å á ú í ə́".split()
-special_char_consonants = "č ǰ ɣ š ž".split()
+special_char_consonants = "č ǰ ɣ ž".split() # no š
 special_letters = special_char_vowels + special_char_consonants
 
 

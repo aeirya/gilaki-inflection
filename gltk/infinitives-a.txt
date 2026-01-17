@@ -1,5 +1,6 @@
 gutən   |   gut
 nəhán   |   nəh
+naan    |   nəh
 
 xandən  |   xand
 kudən   |   kud
@@ -30,4 +31,4 @@ gərdəstən   |   gərdəst
 fanderəstən |   fanderəst
 futurkəstən |   futurkəst
 
-tavədan | tavəd
+tavədan | tavəda
