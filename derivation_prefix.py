@@ -15,48 +15,69 @@ def de_prefix_table():
 
 table = de_prefix_table()
 
-fsts['inf'] = FST.re(f"({'|'.join(table['inf'])})") 
-fsts['simple_inf'] = FST.re("$inf @ ~((du | də) .*)", fsts)
 
 # print(Paradigm(fsts['inf'], ".*"))
 # print(Paradigm(fsts['simple_inf'], ".*"))
 
+
 def join(*args):
     return f"({'|'.join(args)})"
 
-# fsts['inf_vocab']
-fsts['du_infinitives'] = FST.re(join('kudən', 'kəftən', 'xadən'))
-fsts['d_prefix_insert'] = FST.re("'[də-prefix]':('dD') $du_infinitives", fsts)
-fsts['də_prefix'] = FST.re("$^rewrite(('dD'):(də)/ # _ . (a | ə))")
-fsts['du_prefix'] = FST.re("$^rewrite(('dD'):(du)/ # _ . (a | u))")
-fsts['d_prefix'] = FST.re("$d_prefix_insert @ $də_prefix @ $du_prefix", fsts)
+# lexicon
+fsts['inf'] = FST.re(f"({'|'.join(table['inf'])})") 
+fsts['simple_inf'] = FST.re("$inf @ ~((du | də) .*)", fsts)
 
-fsts['fu_infinitives'] = FST.re(join(
-    'kudən', 'bostən', 'rəsen', 'giftən', 'dan', 'nderəsten', 'kəšen', 'turkəstən'
+fsts['class_D'] = FST.re(join('kudən', 'kəftən', 'xadən'))
+fsts['class_F'] = FST.re(join(
+    'kudən', 'bostən', 'rəsen', 
+    'giftən', 'dan', 'nderəsten', 
+    'kəšen', 'turkəstən'
     ))
-fsts['fa_prefix_insert'] = FST.re("'[fa-prefix]':(fa) $fu_infinitives", fsts)
-fsts['fu_prefix'] = FST.re("$^rewrite((fa):(fu) / # _ . (o|u))")
-fsts['fa_prefix'] = FST.re("$fa_prefix_insert @ $fu_prefix", fsts)
+fsts['class_VA'] = FST.re(join(
+    'gərdəstən', 'kəftən', 'kudən', 
+    'ven', 'vərsen'
+    ))
+fsts["class_CHA"] = FST.re("kudən")
+fsts["class_TA"]  = FST.re("vədan")
+fsts["class_U"]   = FST.re("sadən")
 
-fsts['va_infinitives'] = FST.re(join('gərdəstən', 'kəftən', 'kudən', 'ven', 'vərsen'))
-fsts['va_prefix'] = FST.re("'[va-prefix]':(va) $va_infinitives", fsts)
+# morphotactics
+fsts["NEG"] = FST.re("'[neg]':(nə)")
 
-fsts['b_prefix_insert'] = FST.re("'[bu-prefix]':('bB') $simple_inf", fsts)
-fsts['bi_prefix'] = FST.re("$^rewrite(('bB'):(bi)/ # _ . i)")
-fsts['bu_prefix'] = FST.re("$^rewrite(('bB'):(bu)/ # _ . (o|u))")
-fsts['bə_prefix'] = FST.re("$^rewrite(('bB'):(bə)/ # _ . ə)")
-fsts['b_prefix'] = FST.re("$b_prefix_insert @ $bi_prefix @ $bu_prefix @ $bə_prefix", fsts)
+fsts["D_path"]  = FST.re("'[der]':(D) ($NEG)? $class_D", fsts)
+fsts["F_path"]  = FST.re("'[der]':(F) ($NEG)? $class_F", fsts)
+fsts["VA_path"] = FST.re("'[der]':(va) ($NEG)? $class_VA", fsts)
 
-fsts['rare_prefixes'] = FST.re('|'.join([
-    "('[ča-prefix]':(ča) (kuddən))",
-    "('[ta-prefix]':(ta) (vədan))",
-    "('[u-prefix]':(u) (sadən))"
-]))
+fsts["CHA_path"] = FST.re("'[der]':(ča) ($NEG)? $class_CHA", fsts)
+fsts["TA_path"]  = FST.re("'[der]':(ta) ($NEG)? $class_TA", fsts)
+fsts["U_path"]   = FST.re("'[der]':(u)  ($NEG)? $class_U",  fsts)
 
+fsts["DERIVED"] = FST.re("$D_path | $F_path | $VA_path | $CHA_path | $TA_path | $U_path", fsts)
+fsts["SIMPLE"] = FST.re("'[tense]':(B | $NEG) $simple_inf", fsts)
 
-fsts['prefixes'] = FST.re("$b_prefix | $d_prefix | $fa_prefix | $va_prefix | $rare_prefixes", fsts)
+fsts["MORPH"] = FST.re("$DERIVED | $SIMPLE", fsts)
 
-fsts['grammar'] = FST.re("$prefixes", fsts)
+fsts["D_allo"] = FST.re(
+    "$^rewrite((D):(də) / # _ . (a|ə)) @ "
+    "$^rewrite((D):(du) / # _ . (a|u))"
+)
+
+fsts["F_allo"] = FST.re(
+    "$^rewrite((F):(fu) / # _ . (o|u)) @ "
+    "$^rewrite((F):(fa) / # _)"
+)
+
+fsts["B_allo"] = FST.re(
+    "$^rewrite((B):(bi) / # _ . i) @ "
+    "$^rewrite((B):(bu) / # _ . (o|u)) @ "
+    "$^rewrite((B):(bə) / # _ . ə) @ "
+    "$^rewrite((B):(bə) / # _)"
+)
+
+fsts['allo'] = FST.re('$D_allo @ $F_allo @ $B_allo', fsts)
+
+fsts["grammar"] = FST.re("$MORPH @ $allo", fsts)
+
 print(Paradigm(fsts['grammar'], ".*"))
 
 # print(list(
