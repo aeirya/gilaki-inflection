@@ -33,7 +33,13 @@ fsts['fa_prefix'] = FST.re("$fa_prefix_insert @ $fu_prefix", fsts)
 
 fsts['va_prefix'] = FST.re("'[va-prefix]':(va) $simple_inf", fsts)
 
-fsts['prefixes'] = FST.re("$d_prefix | $fa_prefix | $va_prefix", fsts)
+fsts['rare_prefixes'] = FST.re('|'.join([
+    "('[ča-prefix]':(ča) (kuddən))",
+    "('[ta-prefix]':(ta) (vədan))",
+    "('[u-prefix]':(u) (sadən))"
+]))
+
+fsts['prefixes'] = FST.re("$d_prefix | $fa_prefix | $va_prefix | $rare_prefixes", fsts)
 
 fsts['grammar'] = FST.re("$prefixes", fsts)
 print(Paradigm(fsts['grammar'], ".*"))
